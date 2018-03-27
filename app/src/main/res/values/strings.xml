@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MapChat</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="partners_list">Partners List</string>
+</resources>
