@@ -2,14 +2,17 @@ package edu.temple.mapchat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +44,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+import java.util.ArrayList;
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, PartnersFragment.OnListFragmentInteractionListener{
 
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
@@ -50,6 +55,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     Marker mCurrentLocationMarker;
+    Partners partners;
+    ArrayList<Partners> PartnerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +83,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.option_get_partners) {
-            //showPartnersList();
+            PartnersFragment newFragment = new PartnersFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_layout, newFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
         return true;
     }
@@ -86,6 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         getLocationPermission();
 
+        PartnerList = new ArrayList<>();
         mMap = googleMap;
 
         RequestQueue requestQueue = RequestQueueSingleton.getInstance(this)
@@ -107,6 +120,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String username = jsonObject.getString("username");
                                 String latitude = jsonObject.getString("latitude");
                                 String longitude = jsonObject.getString("longitude");
+
+                                partners = new Partners(username, latitude, longitude);
+
+                                PartnerList.add(partners);
 
                                 LatLng latLng = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
                                 MarkerOptions marker = new MarkerOptions().position(latLng).title(username);
@@ -174,7 +191,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title("You are here!");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                 mCurrentLocationMarker = mMap.addMarker(markerOptions);
 
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
@@ -251,5 +268,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
         }
+    }
+
+    @Override
+    public void onListFragmentInteraction(Uri uri) {
+
     }
 }
