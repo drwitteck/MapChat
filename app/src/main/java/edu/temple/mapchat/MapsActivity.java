@@ -46,7 +46,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, PartnersFragment.OnListFragmentInteractionListener{
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, PartnersFragment.OnListFragmentInteractionListener {
 
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
@@ -86,7 +86,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             PartnersFragment newFragment = new PartnersFragment();
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_layout, newFragment)
+            fragmentTransaction.replace(R.id.fragment_partners, newFragment)
                     .addToBackStack(null)
                     .commit();
         }
