@@ -56,8 +56,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     Marker mCurrentLocationMarker;
-    Partners partners;
-    ArrayList<Partners> PartnerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +93,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         getLocationPermission();
 
-        PartnerList = new ArrayList<>();
         mMap = googleMap;
 
         RequestQueue requestQueue = RequestQueueSingleton.getInstance(this)
@@ -117,10 +114,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String username = jsonObject.getString("username");
                                 String latitude = jsonObject.getString("latitude");
                                 String longitude = jsonObject.getString("longitude");
-
-                                partners = new Partners(username);
-
-                                PartnerList.add(partners);
 
                                 LatLng latLng = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
                                 MarkerOptions marker = new MarkerOptions().position(latLng).title(username);

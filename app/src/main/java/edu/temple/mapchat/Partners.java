@@ -3,10 +3,6 @@ package edu.temple.mapchat;
 public class Partners {
     private String username;
 
-    Partners(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return username;
     }

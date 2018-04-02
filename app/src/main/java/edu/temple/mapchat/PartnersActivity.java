@@ -1,23 +1,18 @@
 package edu.temple.mapchat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,12 +21,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +40,10 @@ public class PartnersActivity extends AppCompatActivity {
     private String getURL = "https://kamorris.com/lab/get_locations.php";
     private String postURL = "https://kamorris.com/lab/register_location.php";
     private RequestQueue requestQueue;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    List<Partners> dataset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,60 +105,6 @@ public class PartnersActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-
-//    public void getPartners(){
-//        // Initialize a new RequestQueueSingleton instance
-//        requestQueue = RequestQueueSingleton.getInstance(this)
-//                .getRequestQueue();
-//
-//        // Initialize a new JsonObjectRequest instance
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-//                getURL,
-//                new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        // Process the JSON
-//                        ArrayList<Partners> arrayOfPartners = new ArrayList<>();
-//                        try {
-//                            for (int i = 0; i < response.length(); i++){
-//                                // Get current json object
-//                                JSONObject jsonObject = (JSONObject) response.get(i);
-//
-//                                // Get the current jsonObject (json object) data
-//                                String username = jsonObject.getString("username");
-//                                String latitude = jsonObject.getString("latitude");
-//                                String longitude = jsonObject.getString("longitude");
-//
-////                                data += "Username: " + username + "\n\n";
-////                                data += "Latitude: " + latitude + "\n\n";
-////                                data += "Longitude: " + longitude + "\n\n";
-////                                data += "" + "\n\n";
-//
-//                                arrayOfPartners.add(new Partners(username));
-//
-////                                partnerList = new ArrayList<>();
-////                                partnerList.add(username);
-//                            }
-//
-////                            results.setText(data);
-//
-//                        }catch (JSONException e){
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener(){
-//                    @Override
-//                    public void onErrorResponse(VolleyError error){
-//                        Log.e("Volley", "Error");
-//                    }
-//                }
-//        );
-//
-//        // Add JsonObjectRequest to the RequestQueue
-//        requestQueue.add(jsonArrayRequest);
-//    }
-
     public void addUser(){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         EditText partnerInput = new EditText(this);
@@ -214,7 +159,10 @@ public class PartnersActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
+        String name = "Phil";
+        Toast.makeText(this, "Name" + name, Toast.LENGTH_SHORT).show();
         Intent chatIntent = new Intent(this, ChatActivity.class);
+        chatIntent.putExtra("username", name);
         startActivity(chatIntent);
     }
 }
