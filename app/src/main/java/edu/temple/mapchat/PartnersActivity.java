@@ -2,19 +2,21 @@ package edu.temple.mapchat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Location;
-import android.net.Uri;
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.Fragment;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -29,10 +31,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class PartnersFragment extends Fragment {
+public class PartnersActivity extends AppCompatActivity {
     private TextView results;
     private String data = "";
     private String userName;
@@ -41,24 +45,15 @@ public class PartnersFragment extends Fragment {
     private String getURL = "https://kamorris.com/lab/get_locations.php";
     private String postURL = "https://kamorris.com/lab/register_location.php";
     private RequestQueue requestQueue;
-//    private PartnersInterface mPartnersInterface;
-
-    public PartnersFragment() {
-        // Required empty public constructor
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_partners);
 
-    }
+        results = findViewById(R.id.json_data);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_partners, container, false);
-
-        FloatingActionButton addPartnerFab = v.findViewById(R.id.fab_add_partner);
+        FloatingActionButton addPartnerFab = findViewById(R.id.fab_add_partner);
         addPartnerFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,38 +61,18 @@ public class PartnersFragment extends Fragment {
             }
         });
 
-//        Location location = mPartnersInterface.getUsersLocation();
-
-        results = v.findViewById(R.id.json_data);
-
-//        latitude = mPartnersInterface.getUsersLocation().getLatitude();
-//        longitude = mPartnersInterface.getUsersLocation().getLongitude();
-//        stringLat = Double.toString(latitude);
-//        stringLong = Double.toString(longitude);
-
-        // Empty the TextView
-        results.setText("");
-
-        getPartners();
-
-        return v;
-    }
-
-    public void getPartners(){
-        // Initialize a new RequestQueueSingleton instance
-        requestQueue = RequestQueueSingleton.getInstance(getActivity())
+        requestQueue = RequestQueueSingleton.getInstance(this)
                 .getRequestQueue();
 
         // Initialize a new JsonObjectRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 getURL,
                 new Response.Listener<JSONArray>() {
-
                     @Override
                     public void onResponse(JSONArray response) {
                         // Process the JSON
                         try {
-                            for (int i = 0; i < response.length(); i++){
+                            for (int i = 0; i < response.length(); i++) {
                                 // Get current json object
                                 JSONObject jsonObject = (JSONObject) response.get(i);
 
@@ -114,14 +89,14 @@ public class PartnersFragment extends Fragment {
 
                             results.setText(data);
 
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error){
+                    public void onErrorResponse(VolleyError error) {
                         Log.e("Volley", "Error");
                     }
                 }
@@ -131,9 +106,63 @@ public class PartnersFragment extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
+
+//    public void getPartners(){
+//        // Initialize a new RequestQueueSingleton instance
+//        requestQueue = RequestQueueSingleton.getInstance(this)
+//                .getRequestQueue();
+//
+//        // Initialize a new JsonObjectRequest instance
+//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+//                getURL,
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        // Process the JSON
+//                        ArrayList<Partners> arrayOfPartners = new ArrayList<>();
+//                        try {
+//                            for (int i = 0; i < response.length(); i++){
+//                                // Get current json object
+//                                JSONObject jsonObject = (JSONObject) response.get(i);
+//
+//                                // Get the current jsonObject (json object) data
+//                                String username = jsonObject.getString("username");
+//                                String latitude = jsonObject.getString("latitude");
+//                                String longitude = jsonObject.getString("longitude");
+//
+////                                data += "Username: " + username + "\n\n";
+////                                data += "Latitude: " + latitude + "\n\n";
+////                                data += "Longitude: " + longitude + "\n\n";
+////                                data += "" + "\n\n";
+//
+//                                arrayOfPartners.add(new Partners(username));
+//
+////                                partnerList = new ArrayList<>();
+////                                partnerList.add(username);
+//                            }
+//
+////                            results.setText(data);
+//
+//                        }catch (JSONException e){
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error){
+//                        Log.e("Volley", "Error");
+//                    }
+//                }
+//        );
+//
+//        // Add JsonObjectRequest to the RequestQueue
+//        requestQueue.add(jsonArrayRequest);
+//    }
+
     public void addUser(){
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-        EditText partnerInput = new EditText(getContext());
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        EditText partnerInput = new EditText(this);
         alertBuilder.setView(partnerInput);
         userName = partnerInput.getText().toString();
 
@@ -173,7 +202,7 @@ public class PartnersFragment extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
-                params.put("Username", userName);
+                params.put("User", userName);
                 params.put("latitude", stringLat);
                 params.put("longitude", stringLong);
 
@@ -184,71 +213,8 @@ public class PartnersFragment extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-//        if(activity instanceof PartnersInterface) {
-//            mPartnersInterface = (PartnersInterface) activity;
-//        } else {
-//            throw new RuntimeException("Not Implemented");
-//        }
-    }
-
-//    public interface PartnersInterface {
-//        Location getUsersLocation();
-//    }
-
     public void onClick(View view) {
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Uri uri);
+        Intent chatIntent = new Intent(this, ChatActivity.class);
+        startActivity(chatIntent);
     }
 }
-
-
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-//
-//
-//    }
-//
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-////        if (context instanceof OnListFragmentInteractionListener) {
-////            mListener = (OnListFragmentInteractionListener) context;
-////        } else {
-////            throw new RuntimeException(context.toString()
-////                    + " must implement OnListFragmentInteractionListener");
-////        }
-//    }
-//
-
-//}

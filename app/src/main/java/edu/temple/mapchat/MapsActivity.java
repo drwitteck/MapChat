@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -46,7 +47,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, PartnersFragment.OnListFragmentInteractionListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
@@ -83,12 +84,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.option_get_partners) {
-            PartnersFragment newFragment = new PartnersFragment();
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_partners, newFragment)
-                    .addToBackStack(null)
-                    .commit();
+            Intent intent = new Intent(this, PartnersActivity.class);
+            this.startActivity(intent);
         }
         return true;
     }
@@ -121,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String latitude = jsonObject.getString("latitude");
                                 String longitude = jsonObject.getString("longitude");
 
-                                partners = new Partners(username, latitude, longitude);
+                                partners = new Partners(username);
 
                                 PartnerList.add(partners);
 
@@ -270,8 +267,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public void onListFragmentInteraction(Uri uri) {
-
-    }
 }
